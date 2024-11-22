@@ -13,7 +13,10 @@ const Navigation = () => {
           Cart
         </NavLink>
         <NavLink to="/orders" activeClassName="active-sidebar-link">
-          Orders
+          Create Orders
+        </NavLink>
+        <NavLink to="/vieworders" activeClassName="active-sidebar-link">
+          View Orders
         </NavLink>
       </div>
       <div className="content">

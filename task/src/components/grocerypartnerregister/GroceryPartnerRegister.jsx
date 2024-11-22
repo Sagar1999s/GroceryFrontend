@@ -3,10 +3,7 @@ import React, { useState } from 'react';
 export const GroceryPartnerRegister = () => {
   const [formData, setFormData] = useState({
     name: '',
-    address: '',
-    city: '',
-    state: '',
-    pincode: '',
+    phoneNumber: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -16,18 +13,41 @@ export const GroceryPartnerRegister = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-
-    alert('Form submitted successfully!');
-    console.log('Form Data:', formData);
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/groceryapp/create-customer/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phoneNumber,
+          password: formData.password,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create customer');
+      }
+  
+      const data = await response.json();
+      console.log('Form Data Submitted:', data);
+      alert('Customer created successfully!');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred while submitting the form.');
+    }
   };
-
+  
   return (
     <div style={{ padding: '30px', maxWidth: '500px', margin: 'auto' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Partner Registration</h2>
@@ -43,36 +63,9 @@ export const GroceryPartnerRegister = () => {
         />
         <input
           type="text"
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formData.city}
-          onChange={handleChange}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="text"
-          name="state"
-          placeholder="State"
-          value={formData.state}
-          onChange={handleChange}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="text"
-          name="pincode"
-          placeholder="Pincode"
-          value={formData.pincode}
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={formData.phoneNumber}
           onChange={handleChange}
           required
           style={inputStyle}

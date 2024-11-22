@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 export const Login = () => {
   const [isOtpLogin, setIsOtpLogin] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -15,17 +19,71 @@ export const Login = () => {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (isOtpLogin) {
-      console.log('Logging in with OTP:', formData.email, formData.otp);
-    } else {
-      console.log('Logging in with email/password:', formData.email, formData.password);
+  
+    try {
+      let payload;
+  
+      if (isOtpLogin && otpSent) {
+        // Payload for OTP-based login
+        payload = {
+          email: formData.email,
+          otp: formData.otp,
+        };
+        console.log("Verifying OTP with payload:", payload);
+      } else if (!isOtpLogin) {
+        // Payload for email/password login
+        payload = {
+          email: formData.email,
+          password: formData.password,
+        };
+        console.log("Logging in with email/password with payload:", payload);
+      } else {
+        alert("Please request an OTP or provide valid login details.");
+        return;
+      }
+  
+      // Sending payload to server
+      const response = await fetch("http://127.0.0.1:8000/groceryapp/login_user/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("Login successful:", data);
+        alert("Login successful!");
+  
+        // Store the session data and user details in localStorage
+        localStorage.setItem("session_id", data.session_id);
+        localStorage.setItem("user", JSON.stringify(data.user));
+  
+        // Navigate to home page or other page after successful login
+        navigate("/home");
+      } else {
+        console.error("Login failed:", data);
+        alert(`Login failed: ${data.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred while logging in.");
     }
   };
+  
+  
 
   const handleSendOtp = () => {
-    console.log('Sending OTP to email:', formData.email);
+    if (formData.email) {
+      console.log('Sending OTP to email:', formData.email);
+      setOtpSent(true);
+    } else {
+      alert('Please enter your email before requesting an OTP.');
+    }
   };
 
   return (
@@ -49,22 +107,34 @@ export const Login = () => {
 
           {isOtpLogin ? (
             <>
-              <div style={inputGroupStyle}>
-                <label htmlFor="otp" style={labelStyle}>OTP:</label>
-                <input
-                  type="text"
-                  name="otp"
-                  id="otp"
-                  value={formData.otp}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                  placeholder="Enter OTP"
-                />
-              </div>
-              <button type="button" onClick={handleSendOtp} style={secondaryButtonStyle}>
-                Send OTP
-              </button>
+              {!otpSent ? (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  style={primaryButtonStyle}
+                >
+                  Send OTP
+                </button>
+              ) : (
+                <>
+                  <div style={inputGroupStyle}>
+                    <label htmlFor="otp" style={labelStyle}>OTP:</label>
+                    <input
+                      type="text"
+                      name="otp"
+                      id="otp"
+                      value={formData.otp}
+                      onChange={handleChange}
+                      required
+                      style={inputStyle}
+                      placeholder="Enter OTP"
+                    />
+                  </div>
+                  <button type="submit" style={primaryButtonStyle}>
+                    Verify
+                  </button>
+                </>
+              )}
             </>
           ) : (
             <div style={inputGroupStyle}>
@@ -82,15 +152,21 @@ export const Login = () => {
             </div>
           )}
 
-          <button type="submit" style={primaryButtonStyle}>
-            Login
-          </button>
+          {!isOtpLogin && (
+            <button type="submit" style={primaryButtonStyle}>
+              Login
+            </button>
+          )}
         </form>
 
         <p style={{ marginTop: '20px', fontSize: '14px' }}>
           <button
             type="button"
-            onClick={() => setIsOtpLogin(!isOtpLogin)}
+            onClick={() => {
+              setIsOtpLogin(!isOtpLogin);
+              setOtpSent(false);
+              setFormData({ email: '', password: '', otp: '' });
+            }}
             style={toggleButtonStyle}
           >
             {isOtpLogin ? 'Login with Password' : 'Login with OTP'}
@@ -157,17 +233,6 @@ const primaryButtonStyle = {
   border: 'none',
   borderRadius: '5px',
   fontSize: '16px',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s',
-};
-
-const secondaryButtonStyle = {
-  padding: '10px 20px',
-  backgroundColor: '#6c757d',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
-  fontSize: '14px',
   cursor: 'pointer',
   transition: 'background-color 0.3s',
 };

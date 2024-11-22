@@ -14,7 +14,7 @@ const NavBar = () => {
         </li>
         <li>
           <NavLink to="/grocerypartnerregister" activeClassName="active-link">
-            Partner Register
+            Register
           </NavLink>
         </li>
         <li>
