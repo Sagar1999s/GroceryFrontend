@@ -4,15 +4,15 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import AppRoutes from './routes/AppRoutes';
 
+// Get the root element
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// Render the app with the root element
 root.render(
   <React.StrictMode>
     <AppRoutes />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// Optional: Start measuring performance in your app
 reportWebVitals();
