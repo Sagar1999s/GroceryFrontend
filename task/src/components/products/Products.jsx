@@ -190,7 +190,7 @@ const Products = () => {
     <div className="products-container">
       <Navigation />
       <div className="products-content">
-        <h2>Products</h2>
+        <h2>Product</h2>
         
         <button className="add-product-button" onClick={handleOpenModal}>
           Add Product
