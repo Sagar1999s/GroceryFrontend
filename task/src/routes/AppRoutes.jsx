@@ -26,8 +26,6 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/customer" element={<Customer />} />
         <Route path="/vieworders" element={<ViewOrders />} />
-
-
       </Routes>
     </Router>
   );
