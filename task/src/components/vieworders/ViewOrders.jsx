@@ -9,7 +9,7 @@ const ViewOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/groceryapp/get-orders/');
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/get-orders/');
         if (!response.ok) {
           throw new Error('Failed to fetch orders');
         }

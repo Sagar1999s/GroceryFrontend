@@ -13,7 +13,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/groceryapp/get-products/');
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/get-products/');
         if (response.ok) {
           const data = await response.json();
           setProducts(data);
@@ -57,7 +57,7 @@ const Products = () => {
     console.log(productId)
   
     try {
-      const response = await fetch(`http://127.0.0.1:8000/groceryapp/edit-product/${productId}/`, {
+      const response = await fetch(`http://15.207.99.18:8000/groceryapp/edit-product/${productId}/`, {
         method: 'PUT',
         body: formData,
       });
@@ -80,7 +80,7 @@ const Products = () => {
     const confirmation = window.confirm("Are you sure you want to delete this product?");
     if (confirmation) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/groceryapp/delete-product/${productId}/`, {
+        const response = await fetch(`http://15.207.99.18:8000/groceryapp/delete-product/${productId}/`, {
           method: 'DELETE',
         });
 
@@ -103,7 +103,7 @@ const Products = () => {
   useEffect(() => {
     const fetchCartProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/groceryapp/get-cart-products/');
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/get-cart-products/');
         if (!response.ok) {
           throw new Error('Failed to fetch cart products');
         }
@@ -123,7 +123,7 @@ const Products = () => {
     const payload = { product_id: product.id };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/groceryapp/add-to-cart/', {
+      const response = await fetch('http://15.207.99.18:8000/groceryapp/add-to-cart/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Products = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/groceryapp/create-product/', {
+      const response = await fetch('http://15.207.99.18:8000/groceryapp/create-product/', {
         method: 'POST',
         body: formData,
       });

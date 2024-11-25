@@ -22,7 +22,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchCartProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/groceryapp/get-cart-products/');
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/get-cart-products/');
         if (!response.ok) {
           throw new Error('Failed to fetch cart products');
         }
@@ -56,7 +56,7 @@ const Orders = () => {
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/groceryapp/create-order/', {
+      const response = await fetch('http://15.207.99.18:8000/groceryapp/create-order/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/groceryapp/get_all_customers/');
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/get_all_customers/');
         if (!response.ok) {
           throw new Error('Failed to fetch customers');
         }

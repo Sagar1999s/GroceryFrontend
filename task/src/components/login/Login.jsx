@@ -45,7 +45,7 @@ export const Login = () => {
       }
   
       // Sending payload to server
-      const response = await fetch("http://127.0.0.1:8000/groceryapp/login_user/", {
+      const response = await fetch("http://15.207.99.18:8000/groceryapp/login_user/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,24 +67,83 @@ export const Login = () => {
         navigate("/home");
       } else {
         console.error("Login failed:", data);
-        alert(`Login failed: ${data.error || "Unknown error"}`);
+        // alert(`Login failed: ${data.error || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error during login:", error);
-      alert("An error occurred while logging in.");
+      // alert("An error occurred while logging in.");
     }
   };
   
   
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     if (formData.email) {
-      console.log('Sending OTP to email:', formData.email);
-      setOtpSent(true);
+      try {
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/send-otp/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: formData.email }),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          console.log('OTP sent successfully:', data.message);
+          setOtpSent(true);
+        } else {
+          const errorData = await response.json();
+          console.error('Error sending OTP:', errorData.error);
+          alert(errorData.error || 'Failed to send OTP.');
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        alert('Something went wrong. Please try again later.');
+      }
     } else {
       alert('Please enter your email before requesting an OTP.');
     }
   };
+  
+  const handleVerifyOtp = async () => {
+    const payload = {
+      email: formData.email, // Assuming formData contains the email
+      otp: formData.otp, // Assuming formData contains the OTP
+    };
+  
+    if (!payload.email || !payload.otp) {
+      alert("Please provide both email and OTP.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://15.207.99.18:8000/groceryapp/verify-otp/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Verification successful:", data);
+        navigate("/home");
+  
+        // Perform actions upon successful verification
+        // Example: Save session or navigate to a different page
+      } else {
+        const errorData = await response.json();
+        console.error("Verification failed:", errorData);
+        alert(errorData.error || "Failed to verify OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during OTP verification:", error);
+      // alert("An error occurred while verifying OTP. Please try again later.");
+    }
+  };
+  
 
   return (
     <div style={containerStyle}>
@@ -130,8 +189,9 @@ export const Login = () => {
                       placeholder="Enter OTP"
                     />
                   </div>
-                  <button type="submit" style={primaryButtonStyle}>
+                  <button type="submit" onClick={handleVerifyOtp} style={primaryButtonStyle}>
                     Verify
+                    
                   </button>
                 </>
               )}

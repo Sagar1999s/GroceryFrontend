@@ -11,7 +11,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCartProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/groceryapp/get-cart-products/');
+        const response = await fetch('http://15.207.99.18:8000/groceryapp/get-cart-products/');
 
         if (!response.ok) {
           throw new Error('Failed to fetch cart products');
